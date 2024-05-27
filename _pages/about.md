@@ -2,24 +2,21 @@
 layout: about
 title: about
 permalink: /
-subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Moto. Etc.
+subtitle: <a href='https://www.mcgill.ca/'>McGill University</a>. Aspiring GenAI Candidate | Undergraduate Research Assistant
 
 profile:
   align: right
-  image: prof_pic.jpg
+  image: MichaelYu.jpg
   image_circular: false # crops the image to make it circular
-  more_info: >
-    <p>555 your office number</p>
-    <p>123 your address street</p>
-    <p>Your City, State 12345</p>
+  address: >
+    <p></p>
 
 news: true # includes a list of news items
-selected_papers: true # includes a list of papers marked as "selected={true}"
+highlights: true
+# selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true # includes social icons at the bottom of the page
 ---
 
-Write your biography here. Tell the world about yourself. Link to your favorite [subreddit](http://reddit.com). You can put a picture in, too. The code is already in, just name your picture `prof_pic.jpg` and put it in the `img/` folder.
+I am a 3rd-year undergraduate student at the **McGill University**'s [**Computer Science**](https://www.cs.mcgill.ca/) with a minor in [**Geographical Information Science**](https://gic.geog.mcgill.ca/). Currently, I am supervised by Prof. [Renee Sieber](https://www.mcgill.ca/geography/people-0/sieber) (affiliations: Prompt Chaining, RAG, OpenAI Embedding, I/O Issues, GenAI Applications), working on identifying "Weather Vulnerabilities to Past and Present Disruptive Weather" - The Continuing Challenge of Using Newspapers as Digital Data. I also have collaborations with Prof. [Luke McCaffery](https://mccaffreylab.mcgill.ca/) 's Lab at the [**Rosalind & Morris Goodman Cancer Institute**](https://www.mcgill.ca/gci/) (engaging in **computational modeling** and **simulation** to investigate cellular dynamics and mechanisms in cancer research) and Prof. [Jacqueline Lane](https://www.hbs.edu/faculty/Pages/profile.aspx?facId=1432009)'s Group at [**Harvard Business School**](https://www.hbs.edu/) (developing advanced **GenAI frameworks** and analytical tools to optimize venture capital decisions and enhance circular economy enterprises).
 
-Put your address / P.O. box / other info right below your picture. You can also disable any of these elements by editing `profile` property of the YAML header of your `_pages/about.md`. Edit `_bibliography/papers.bib` and Jekyll will render your [publications page](/al-folio/publications/) automatically.
-
-Link to your social media connections, too. This theme is set up to use [Font Awesome icons](https://fontawesome.com/) and [Academicons](https://jpswalsh.github.io/academicons/), like the ones below. Add your Facebook, Twitter, LinkedIn, Google Scholar, or just disable all of them.
+I am passionate about leveraging GenAI applications and computational techniques to solve pressing issues in various topics. If you are interested in these areas or would like to chat in general, feel free to reach out to me.
