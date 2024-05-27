@@ -2,7 +2,7 @@
  * Themes
  ******************************************************************************/
 
- :root {
+:root {
   --global-bg-color: #fbf1c7;
   --global-code-bg-color: #d5c4a1;
   --global-text-color: #282828;
@@ -32,12 +32,12 @@
   --global-danger-block-title: #c00;
 
   .fa-sun {
-    display : none;
+    display: none;
   }
   .fa-moon {
     padding-left: 10px;
     padding-top: 12px;
-    display : block;
+    display: block;
   }
 
   .repo-img-light {
@@ -48,7 +48,7 @@
   }
 }
 
-html[data-theme='dark'] {
+html[data-theme="dark"] {
   --global-bg-color: #282828;
   --global-code-bg-color: #504945;
   --global-text-color: #fbf1c7;
@@ -80,10 +80,10 @@ html[data-theme='dark'] {
   .fa-sun {
     padding-left: 10px;
     padding-top: 12px;
-    display : block;
+    display: block;
   }
   .fa-moon {
-    display : none;
+    display: none;
   }
 
   .repo-img-light {
