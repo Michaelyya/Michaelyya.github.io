@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-🏆Achieved <a href="assets/pdf/CIHR Award.pdf" target="_blank">CIHR - Canadian Inst of Health Research Award ($6000)
+🏆Achieved <a href="assets/pdf/CIHR.pdf" target="_blank">CIHR - Canadian Inst of Health Research Award ($6000)
