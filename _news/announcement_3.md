@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-🏆Achieved CIHR - Canadian Inst of Health Research Award($6000)
+🏆Achieved CIHR - [Canadian Inst of Health Research Award]("assets/pdf/Best Pitch - GreenTechGuardians.pdf")($6000)
