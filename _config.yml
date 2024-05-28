@@ -50,7 +50,7 @@ search_enabled: false
 socials_in_search: true
 
 # Dimensions
-max_width: 900px
+max_width: 800px
 
 # TODO: add layout settings (single page vs. multi-page)
 
@@ -607,15 +607,10 @@ jekyll_get_json:
   - data: resume
     json: assets/json/resume.json # it can also be an url
 jsonresume:
-  - basics
-  - work
-  - education
+  - About me
+  - Education
+  - Experiences
   - publications
-  - projects
-  - volunteer
-  - awards
-  - certificates
   - skills
   - languages
   - interests
-  - references
