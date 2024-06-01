@@ -2,11 +2,11 @@
 layout: page
 title: projects
 permalink: /projects/
-description: A growing collection of your cool projects.
+description: Welcome to Michael's project gallery
 nav: true
 nav_order: 3
-display_categories: [work, fun]
-horizontal: false
+display_categories: [GenAI Applications, Computational Biology, Games]
+horizontal: true
 ---
 
 <!-- pages/projects.md -->
