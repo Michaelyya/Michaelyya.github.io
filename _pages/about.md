@@ -1,6 +1,6 @@
 ---
 layout: about
-title: about
+title: About
 permalink: /
 subtitle: <a href='https://www.mcgill.ca/'>McGill University</a>. Aspiring GenAI Candidate | Undergraduate Research Assistant
 
