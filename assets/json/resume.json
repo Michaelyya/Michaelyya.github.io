@@ -62,7 +62,7 @@
       "highlights": ["2023 summer courses 'Numerical Calculus I", "Held office hour, organized discussion sessions and corrected homework assignment"]
     }
   ],
-  "volunteer": [
+  "Volunteers": [
     {
       "organization": "Hack McGill",
       "location": "Montreal, QC",
@@ -75,7 +75,21 @@
         "Collaborated in cross-functional teams to organize a 700 attendee collegiate hackathon",
         "Mentored ten hackers one-on-one on the basics of object-oriented design and web frameworks"
       ]
+    },
+    {
+      "organization": "Ask An Undergrad",
+      "location": "Toronto, Ontario",
+      "position": "Website Developer",
+      "url": "https://www.askanundergrad.com/",
+      "startDate": "2024-5",
+      "endDate": "present",
+      "summary": "Helping high school students explore undergraduate programs across Canada.",
+      "highlights": [
+        "Was a mentor for high school students through coffee chat and being a panelist for student panel events",
+        "Was a website developer and helping mentor team regularly update website"
+      ]
     }
+    
   ],
 
   "skills": [

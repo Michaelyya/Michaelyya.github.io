@@ -5,7 +5,7 @@ permalink: /projects/
 description: Welcome to Michael's project gallery
 nav: true
 nav_order: 3
-display_categories: [GenAI Applications, Computational Biology, Games]
+display_categories: [GenAI Applications, Computational Biology, Games & Others]
 horizontal: true
 ---
 

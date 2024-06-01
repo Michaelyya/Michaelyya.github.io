@@ -3,12 +3,13 @@
 # -----------------------------------------------------------------------------
 
 title: blank # the website title (if blank, full name will be used instead)
-first_name: Yongan
+first_name: Michael Y.
 middle_name:
 last_name: Yu
 email: yya040327@gmail.com
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
   Michael Yu's personal website
+  https://michaelyya.github.io/
 footer_text:
 keywords: Michael Yu # add your own keywords or leave empty
 lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
@@ -610,7 +611,7 @@ jsonresume:
   - About me
   - Education
   - Experiences
-  - publications
+  - Volunteers
   - skills
   - languages
   - interests
