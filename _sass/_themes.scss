@@ -2,12 +2,13 @@
  * Themes
  ******************************************************************************/
 
+@use "sass:color";
+
 :root {
   --global-bg-color: #fbf1c7;
   --global-code-bg-color: #d5c4a1;
   --global-text-color: #282828;
   --global-text-color-light: #3c3836;
-  --global-title-color: #282828;
   --global-theme-color: #{$blue-color};
   --global-hover-color: #{$blue-color-dark};
   --global-hover-text-color: #{$blue-color-dark};
@@ -17,7 +18,16 @@
   --global-distill-app-color: #282828;
   --global-divider-color: #282828;
   --global-card-bg-color: #fbf1c7;
-
+  --global-highlight-color: #{$red-color-dark};
+  --global-back-to-top-bg-color: rgba(
+    #{color.channel($black-color, "red", $space: rgb)},
+    #{color.channel($black-color, "green", $space: rgb)},
+    #{color.channel($black-color, "blue", $space: rgb)},
+    0.4
+  );
+  --global-back-to-top-text-color: #{$black-color};
+  --global-newsletter-bg-color: #{$grey-color-light};
+  --global-newsletter-text-color: #{$grey-color-dark};
   --global-tip-block: #42b983;
   --global-tip-block-bg: #e2f5ec;
   --global-tip-block-text: #215d42;
@@ -30,6 +40,7 @@
   --global-danger-block-bg: #ffe0e0;
   --global-danger-block-text: #600;
   --global-danger-block-title: #c00;
+
 
   #light-toggle-system {
     padding-left: 10px;
@@ -78,7 +89,15 @@ html[data-theme="dark"] {
   --global-distill-app-color: #fbf1c7;
   --global-divider-color: #fbf1c7;
   --global-card-bg-color: #282828;
-
+  --global-back-to-top-bg-color: rgba(
+    #{color.channel($white-color, "red", $space: rgb)},
+    #{color.channel($white-color, "green", $space: rgb)},
+    #{color.channel($white-color, "blue", $space: rgb)},
+    0.5
+  );
+  --global-back-to-top-text-color: #{$black-color};
+  --global-newsletter-bg-color: #{$grey-color-light};
+  --global-newsletter-text-color: #{$grey-color-dark};
   --global-tip-block: #42b983;
   --global-tip-block-bg: #e2f5ec;
   --global-tip-block-text: #215d42;
