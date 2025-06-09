@@ -10,10 +10,10 @@ profile:
   image_circular: false # crops the image to make it circular
   more_info:
 
-news: true  # includes a list of news items
-latest_posts: false  # includes a list of the newest posts
+news: true # includes a list of news items
+latest_posts: false # includes a list of the newest posts
 selected_papers: false # includes a list of papers marked as "selected={true}"
-social: true  # includes social icons at the bottom of the page
+social: true # includes social icons at the bottom of the page
 ---
 
 I am a 4th-year undergraduate student at the **McGill University**'s [**Computer Science**](https://www.cs.mcgill.ca/) with a minor in [**Geographical Information Science**](https://gic.geog.mcgill.ca/). Currently, I am fortunate to be supervised by Prof. [Renee Sieber](https://www.mcgill.ca/geography/people-0/sieber), under [**Data Rescue: Archives & Weather**](https://draw.geog.mcgill.ca/en/) (affiliations: NLP, RAG, Prompt Chaining, LLM Training, I/O Issues), working on identifying "Weather Vulnerabilities to Past and Present Disruptive Weather" - The Continuing Challenge of Using Newspapers as Digital Data.
