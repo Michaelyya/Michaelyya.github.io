@@ -3,3 +3,23 @@
 
 "In Press":
   color: "#83a598"
+
+"ACL":
+  color: "#00629B"
+  url: https://www.aclweb.org/
+
+"NeurIPS":
+  color: "#8B1A4A"
+  url: https://neurips.cc/
+
+"UIST":
+  color: "#2E7D32"
+  url: https://uist.acm.org/
+
+"AIED":
+  color: "#E65100"
+  url: https://www.aied2025.org/
+
+"SIGIR":
+  color: "#1565C0"
+  url: https://sigir.org/
