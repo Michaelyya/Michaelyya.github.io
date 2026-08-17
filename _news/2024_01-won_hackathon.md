@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-🎉 Won first place at AI EarthHack - <a href="../assets/pdf/BestPitch.pdf" target="_blank">Best Pitch & Demo Award ($2000)
+🎉 Won first place at AI EarthHack — [Best Pitch & Demo Award ($2000)](/assets/pdf/BestPitch.pdf).
