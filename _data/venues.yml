@@ -23,3 +23,7 @@
 "SIGIR":
   color: "#1565C0"
   url: https://sigir.org/
+
+"CoNLL":
+  color: "#6B3F78"
+  url: https://www.conll.org/

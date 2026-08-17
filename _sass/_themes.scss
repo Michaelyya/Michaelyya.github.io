@@ -5,19 +5,19 @@
 @use "sass:color";
 
 :root {
-  --global-bg-color: #fbf1c7;
-  --global-code-bg-color: #d5c4a1;
-  --global-text-color: #282828;
-  --global-text-color-light: #3c3836;
-  --global-theme-color: #{$blue-color};
-  --global-hover-color: #{$blue-color-dark};
-  --global-hover-text-color: #{$blue-color-dark};
-  --global-footer-bg-color: #fbf1c7;
-  --global-footer-text-color: #3c3836;
-  --global-footer-link-color: #3c3836;
-  --global-distill-app-color: #282828;
-  --global-divider-color: #282828;
-  --global-card-bg-color: #fbf1c7;
+  --global-bg-color: #fcfcfb;
+  --global-code-bg-color: #f1f4f7;
+  --global-text-color: #202833;
+  --global-text-color-light: #56616f;
+  --global-theme-color: #1f5a85;
+  --global-hover-color: #173f5f;
+  --global-hover-text-color: #173f5f;
+  --global-footer-bg-color: #f5f7f8;
+  --global-footer-text-color: #56616f;
+  --global-footer-link-color: #1f5a85;
+  --global-distill-app-color: #202833;
+  --global-divider-color: #d9e0e5;
+  --global-card-bg-color: #ffffff;
   --global-highlight-color: #{$red-color-dark};
   --global-back-to-top-bg-color: rgba(
     #{color.channel($black-color, "red", $space: rgb)},
@@ -74,20 +74,20 @@
 }
 
 html[data-theme="dark"] {
-  --global-bg-color: #282828;
-  --global-code-bg-color: #504945;
-  --global-text-color: #fbf1c7;
-  --global-text-color-light: #ebdbb2;
-  --global-title-color: #ebdbb2;
-  --global-theme-color: #{$blue-color};
-  --global-hover-color: #{$blue-color-dark};
-  --global-hover-text-color: #{$blue-color-dark};
-  --global-footer-bg-color: #282828;
-  --global-footer-text-color: #ebdbb2;
-  --global-footer-link-color: #ebdbb2;
-  --global-distill-app-color: #fbf1c7;
-  --global-divider-color: #fbf1c7;
-  --global-card-bg-color: #282828;
+  --global-bg-color: #151a20;
+  --global-code-bg-color: #222a33;
+  --global-text-color: #e8edf2;
+  --global-text-color-light: #adb8c4;
+  --global-title-color: #f4f7f9;
+  --global-theme-color: #72b6e8;
+  --global-hover-color: #a7d5f5;
+  --global-hover-text-color: #a7d5f5;
+  --global-footer-bg-color: #11161b;
+  --global-footer-text-color: #adb8c4;
+  --global-footer-link-color: #72b6e8;
+  --global-distill-app-color: #e8edf2;
+  --global-divider-color: #35404b;
+  --global-card-bg-color: #1b222a;
   --global-back-to-top-bg-color: rgba(
     #{color.channel($white-color, "red", $space: rgb)},
     #{color.channel($white-color, "green", $space: rgb)},
