@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https:/Michaelyya.github.io/sitemap.xml
+Sitemap: https://Michaelyya.github.io/sitemap.xml
