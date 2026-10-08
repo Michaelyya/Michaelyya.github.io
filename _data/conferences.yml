@@ -1,0 +1,32 @@
+# Conference highlights shown on the front page, oldest first (the strip reverses it).
+# `focus` sets the CSS object-position so the subject stays in frame when cropped.
+- name: AIED 2025
+  place: Palermo, Italy
+  flag: 🇮🇹
+  date: Jul 2025
+  image: assets/img/conference/palermo-aied-2025.jpg
+  focus: 45% 45%
+  url: https://link.springer.com/chapter/10.1007/978-3-031-98462-4_52
+
+- name: ACL 2025
+  place: Vienna, Austria
+  flag: 🇦🇹
+  date: Aug 2025
+  image: assets/img/conference/vienna-acl-2025.jpg
+  focus: 50% 30%
+  url: https://aclanthology.org/2025.findings-acl.207/
+
+- name: AIED 2026
+  place: Seoul, South Korea
+  flag: 🇰🇷
+  date: Jul 2026
+  image: assets/img/conference/seoul-aied-2026.jpg
+  focus: 55% 45%
+  url: https://arxiv.org/abs/2505.20184
+
+- name: Festival of Learning 2026
+  place: Seoul, South Korea
+  flag: 🇰🇷
+  date: Jul 2026
+  image: assets/img/conference/seoul-festival-of-learning-2026.jpg
+  focus: 50% 40%

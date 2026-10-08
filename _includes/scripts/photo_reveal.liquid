@@ -1,0 +1,304 @@
+<!--
+  Hero portrait treatment: a Sobel edge map of the photo that a scan line
+  wipes away left-to-right, with a detector box snapping on as it passes the
+  face. Everything is computed in the browser from the photo itself.
+-->
+<script>
+  (function () {
+    var wrap = document.querySelector('.hero-image[data-reveal]');
+    if (!wrap) return;
+
+    var img = wrap.querySelector('img');
+    var canvas = wrap.querySelector('.reveal-canvas');
+    var label = wrap.querySelector('.reveal-step');
+    if (!img || !canvas) return;
+
+    var ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return;
+
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var SWEEP = 1500; // ms for the scan line to cross the photo
+    var HOLD = 900; // ms the detection box stays before it all fades
+    var ACCENT = '#5ad1e6';
+
+    // Face box in normalised coordinates of the displayed (cropped) photo.
+    var BOX = { x: 0.2, y: 0.19, w: 0.48, h: 0.48 };
+
+    var edges = null; // ImageData of the rendered edge map, at canvas size
+    var edgeW = 0;
+    var edgeH = 0;
+    var raf = null;
+    var timer = null;
+    var guard = null;
+    var running = false;
+
+    var off = document.createElement('canvas');
+    var octx = off.getContext('2d', { willReadFrequently: true });
+
+    function size() {
+      var r = wrap.getBoundingClientRect();
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var w = Math.max(1, Math.round(r.width * dpr));
+      var h = Math.max(1, Math.round(r.height * dpr));
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+        edges = null;
+      }
+      canvas.style.width = r.width + 'px';
+      canvas.style.height = r.height + 'px';
+    }
+
+    // Mirror the CSS `object-fit: cover; object-position: 50% 25%` crop.
+    function drawCover(target, w, h) {
+      var ar = img.naturalWidth / img.naturalHeight;
+      var sw, sh, sx, sy;
+      if (ar > w / h) {
+        sh = img.naturalHeight;
+        sw = sh * (w / h);
+        sx = (img.naturalWidth - sw) / 2;
+        sy = 0;
+      } else {
+        sw = img.naturalWidth;
+        sh = sw / (w / h);
+        sx = 0;
+        sy = (img.naturalHeight - sh) * 0.25;
+      }
+      target.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
+    }
+
+    // Sobel gradient magnitude, painted as accent-coloured lines on near-black.
+    function buildEdges() {
+      var w = canvas.width;
+      var h = canvas.height;
+      off.width = w;
+      off.height = h;
+      drawCover(octx, w, h);
+
+      var src = octx.getImageData(0, 0, w, h);
+      var sd = src.data;
+      var gray = new Float32Array(w * h);
+      for (var i = 0, p = 0; i < sd.length; i += 4, p++) {
+        gray[p] = (sd[i] * 0.299 + sd[i + 1] * 0.587 + sd[i + 2] * 0.114) / 255;
+      }
+
+      var out = octx.createImageData(w, h);
+      var od = out.data;
+      var ar = parseInt(ACCENT.slice(1, 3), 16);
+      var ag = parseInt(ACCENT.slice(3, 5), 16);
+      var ab = parseInt(ACCENT.slice(5, 7), 16);
+
+      for (var y = 1; y < h - 1; y++) {
+        for (var x = 1; x < w - 1; x++) {
+          var o = y * w + x;
+          var tl = gray[o - w - 1],
+            t = gray[o - w],
+            tr = gray[o - w + 1];
+          var l = gray[o - 1],
+            r = gray[o + 1];
+          var bl = gray[o + w - 1],
+            b = gray[o + w],
+            br = gray[o + w + 1];
+          var gx = tl + 2 * l + bl - tr - 2 * r - br;
+          var gy = tl + 2 * t + tr - bl - 2 * b - br;
+          var m = Math.sqrt(gx * gx + gy * gy) * 0.8;
+          // Knock out low-gradient JPEG noise so flat areas stay flat.
+          m = (m - 0.1) / 0.9;
+          if (m < 0) m = 0;
+          if (m > 1) m = 1;
+          m = Math.pow(m, 0.7);
+          var k = o * 4;
+          // Dark plate with the edge energy glowing on top of it.
+          od[k] = 10 + ar * m;
+          od[k + 1] = 14 + ag * m;
+          od[k + 2] = 20 + ab * m;
+          od[k + 3] = 255;
+        }
+      }
+      // Fill the 1px border the kernel cannot reach.
+      for (var e = 0; e < w; e++) {
+        for (var yy = 0; yy < h; yy += h - 1) {
+          var kk = (yy * w + e) * 4;
+          od[kk] = 10;
+          od[kk + 1] = 14;
+          od[kk + 2] = 20;
+          od[kk + 3] = 255;
+        }
+      }
+      for (var f = 0; f < h; f++) {
+        for (var xx = 0; xx < w; xx += w - 1) {
+          var k2 = (f * w + xx) * 4;
+          od[k2] = 10;
+          od[k2 + 1] = 14;
+          od[k2 + 2] = 20;
+          od[k2 + 3] = 255;
+        }
+      }
+      edges = out;
+      edgeW = w;
+      edgeH = h;
+    }
+
+    function roundRect(c, x, y, w, h, r) {
+      c.beginPath();
+      c.moveTo(x + r, y);
+      c.arcTo(x + w, y, x + w, y + h, r);
+      c.arcTo(x + w, y + h, x, y + h, r);
+      c.arcTo(x, y + h, x, y, r);
+      c.arcTo(x, y, x + w, y, r);
+      c.closePath();
+    }
+
+    function drawBox(w, h, alpha, dpr) {
+      var bx = BOX.x * w;
+      var by = BOX.y * h;
+      var bw = BOX.w * w;
+      var bh = BOX.h * h;
+      var corner = Math.min(bw, bh) * 0.26;
+
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = ACCENT;
+      ctx.lineWidth = 2.6 * dpr;
+      ctx.lineCap = 'round';
+      ctx.shadowColor = 'rgba(90, 209, 230, 0.85)';
+      ctx.shadowBlur = 10 * dpr;
+
+      // Corner brackets rather than a full rectangle — lighter on the face.
+      var pts = [
+        [bx, by + corner, bx, by, bx + corner, by],
+        [bx + bw - corner, by, bx + bw, by, bx + bw, by + corner],
+        [bx + bw, by + bh - corner, bx + bw, by + bh, bx + bw - corner, by + bh],
+        [bx + corner, by + bh, bx, by + bh, bx, by + bh - corner],
+      ];
+      for (var i = 0; i < pts.length; i++) {
+        var p = pts[i];
+        ctx.beginPath();
+        ctx.moveTo(p[0], p[1]);
+        ctx.lineTo(p[2], p[3]);
+        ctx.lineTo(p[4], p[5]);
+        ctx.stroke();
+      }
+
+      // Confidence tag above the box.
+      ctx.shadowBlur = 0;
+      var fs = Math.max(9, 10 * dpr);
+      ctx.font = '600 ' + fs + 'px ui-monospace, SFMono-Regular, Menlo, monospace';
+      var text = 'person 0.98';
+      var tw = ctx.measureText(text).width;
+      var pad = 5 * dpr;
+      var th = fs + pad;
+      var ty = Math.max(0, by - th - 3 * dpr);
+      ctx.fillStyle = ACCENT;
+      roundRect(ctx, bx, ty, tw + pad * 2, th, 3 * dpr);
+      ctx.fill();
+      ctx.fillStyle = '#06222a';
+      ctx.fillText(text, bx + pad, ty + th - pad * 0.8);
+      ctx.restore();
+    }
+
+    function frame(progress, dpr) {
+      var w = canvas.width;
+      var h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      var cut = Math.round(progress * w);
+
+      // Edge map still covering the part the scanner has not reached.
+      if (edges && cut < w) {
+        ctx.putImageData(edges, 0, 0, cut, 0, w - cut, h);
+      }
+
+      // The scan line itself, with a short glow trailing into the edge map.
+      if (progress > 0 && progress < 1) {
+        var grad = ctx.createLinearGradient(cut, 0, cut + 26 * dpr, 0);
+        grad.addColorStop(0, 'rgba(90, 209, 230, 0.55)');
+        grad.addColorStop(1, 'rgba(90, 209, 230, 0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(cut, 0, 26 * dpr, h);
+
+        ctx.fillStyle = ACCENT;
+        ctx.fillRect(cut - dpr, 0, 2 * dpr, h);
+      }
+
+      // Box appears once the scanner has cleared the face.
+      var boxFrom = BOX.x + BOX.w * 0.72;
+      if (progress > boxFrom) {
+        var a = Math.min(1, (progress - boxFrom) / 0.1);
+        drawBox(w, h, a, dpr);
+      }
+
+      if (label) {
+        label.textContent = progress < 1 ? 'sobel ∂I · ' + Math.round(progress * 100) + '%' : 'person 0.98';
+      }
+    }
+
+    function finish() {
+      clearTimeout(guard);
+      clearTimeout(timer);
+      if (raf) cancelAnimationFrame(raf);
+      raf = null;
+      running = false;
+      wrap.removeAttribute('data-running');
+      canvas.style.opacity = '0';
+      if (label) label.textContent = '';
+    }
+
+    function play() {
+      if (running || !img.complete || !img.naturalWidth) return;
+      running = true;
+      wrap.setAttribute('data-running', '');
+      clearTimeout(guard);
+      guard = setTimeout(finish, SWEEP + HOLD + 2500);
+
+      size();
+      var dpr = canvas.width / parseFloat(canvas.style.width);
+      if (!edges || edgeW !== canvas.width || edgeH !== canvas.height) buildEdges();
+
+      canvas.style.opacity = '1';
+
+      if (reduced.matches) {
+        finish();
+        return;
+      }
+
+      var t0 = performance.now();
+      (function tick(now) {
+        var p = Math.min(1, (now - t0) / SWEEP);
+        // Ease out so the scanner settles rather than stopping dead.
+        frame(1 - Math.pow(1 - p, 2.2), dpr);
+        if (p < 1) {
+          raf = requestAnimationFrame(tick);
+        } else {
+          timer = setTimeout(finish, HOLD);
+        }
+      })(t0);
+    }
+
+    function start() {
+      try {
+        finish();
+        play();
+      } catch (e) {
+        finish();
+      }
+    }
+
+    if (img.complete && img.naturalWidth) {
+      start();
+    } else {
+      img.addEventListener('load', start, { once: true });
+      img.addEventListener('error', finish);
+    }
+
+    wrap.addEventListener('mouseenter', function () {
+      if (!running) start();
+    });
+    wrap.addEventListener('click', function () {
+      if (!running) start();
+    });
+    window.addEventListener('resize', function () {
+      if (!running) edges = null;
+    });
+  })();
+</script>

@@ -1,87 +1,71 @@
 ---
 layout: default
 ---
-<div class="post">
-  <header class="post-header">
-    <h1 class="post-title">
-      {% if site.title == 'blank' %}
-        <span class="font-weight-bold">{{ site.first_name }}</span> {{ site.middle_name }}
-        {{ site.last_name }}
-      {% else %}
-        {{ site.title }}
-      {% endif %}
-    </h1>
-    <p class="desc">{{ page.subtitle }}</p>
-  </header>
-
-  <article>
-    <div class="row">
-      <div class="col-md-8 order-2 order-md-1">
-        <div class="clearfix">
-          {{ content }}
-        </div>
-      </div>
-      {% if page.profile -%}
-        <div class="col-md-4 order-1 order-md-2">
-          {%- if page.profile.image %}
-            {%- assign profile_image_path = page.profile.image | prepend: 'assets/img/' -%}
-
-            {% if page.profile.image_circular %}
-              {%- assign profile_image_class = 'img-fluid z-depth-1 rounded-circle' -%}
-            {% else %}
-              {%- assign profile_image_class = 'img-fluid z-depth-1 rounded' -%}
-            {% endif %}
-
-            {%
-              include figure.liquid
-              path=profile_image_path
-              class=profile_image_class
-              alt=page.profile.image
-              cache_bust=true
-            -%}
-          {% endif -%}
-
-          <!-- More info -->
-          {%- if page.profile.more_info %}
-            <div class="more-info">
-              {{ page.profile.more_info }}
-            </div>
-          {%- endif %}
-
-          <!-- Social -->
-          {%- if page.social %}
-            <div class="social">
-              <div class="contact-icons">
-                {% include social.liquid %}
-              </div>
-            </div>
-          {%- endif %}
-          <!-- Contact note -->
-          <div class="contact-note">
-            {{ site.contact_note }}
-          </div>
-        </div>
-      {%- endif %}
+<div class="post about-page">
+  <!-- Hero: portrait on the left, greeting + bio on the right. -->
+  <section class="hero">
+    <!--
+      The portrait is revealed as a progressive decode: the photo starts as a
+      coarse grid of blocks and resolves, step by step, to full resolution.
+      The <img> stays in the DOM for accessibility and SEO; the <canvas> on top
+      of it plays the animation and then fades away.
+    -->
+    <div class="hero-image" data-reveal title="Progressive decode — hover to replay">
+      <img
+        src="{{ page.profile.image | prepend: 'assets/img/' | relative_url }}"
+        alt="{{ site.first_name }} {{ site.middle_name }} {{ site.last_name }}"
+        loading="eager"
+        {% if page.profile.image_circular %}
+          class="is-circular"
+        {% endif %}
+      >
+      <canvas class="reveal-canvas" aria-hidden="true"></canvas>
+      <span class="reveal-step" aria-hidden="true"></span>
     </div>
 
+    <div class="hero-text">
+      <h1 class="hero-title">{{ page.greeting | default: 'Hello World!' }}</h1>
+      {% if page.subtitle %}
+        <p class="hero-subtitle">{{ page.subtitle }}</p>
+      {% endif %}
+
+      <div class="hero-bio">{{ content }}</div>
+
+      {%- if page.profile.more_info %}
+        <div class="more-info">{{ page.profile.more_info }}</div>
+      {%- endif %}
+    </div>
+  </section>
+  {% include scripts/photo_reveal.liquid %}
+
+  <article>
     <!-- Selected papers -->
     {% if page.selected_papers -%}
-      <h2><a href="{{ '/publications/' | relative_url }}" style="color: inherit;">Selected Publications</a></h2>
+      <h2 class="section-title">
+        <a href="{{ '/publications/' | relative_url }}">Selected Publications</a>
+      </h2>
       {%- include selected_papers.liquid %}
     {%- endif %}
 
     <!-- News -->
     {% if page.news and site.announcements.enabled %}
-      <h2>
-        <a style="color: inherit">News</a>
-      </h2>
+      <h2 class="section-title">News</h2>
       {% include news.liquid limit=true %}
+    {% endif %}
+
+    <!-- Conference highlights -->
+    {% if page.conferences and site.data.conferences %}
+      <h2 class="section-title">
+        Conference Highlights
+        <span class="section-hint">scroll &rarr;</span>
+      </h2>
+      {% include conferences.liquid %}
     {% endif %}
 
     <!-- Latest posts -->
     {% if site.latest_posts.enabled %}
-      <h2>
-        <a href="{{ '/blog/' | relative_url }}" style="color: inherit">Latest posts</a>
+      <h2 class="section-title">
+        <a href="{{ '/blog/' | relative_url }}">Latest posts</a>
       </h2>
       {% include latest_posts.liquid %}
     {% endif %}

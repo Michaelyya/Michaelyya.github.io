@@ -68,26 +68,435 @@ body.sticky-bottom-footer {
   box-shadow: 0 10px 30px rgba(24, 39, 52, 0.1) !important;
 }
 
-.news .table-responsive {
-  border-top: 1px solid var(--global-divider-color);
+/******************************************************************************
+ * Front-page hero
+ ******************************************************************************/
+
+.about-page .hero {
+  display: grid;
+  grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+  gap: clamp(1.5rem, 3.5vw, 2.75rem);
+  align-items: start;
+  margin-bottom: 0.5rem;
 }
 
-.news table tr {
-  border-bottom: 1px solid var(--global-divider-color);
+.about-page .hero-image {
+  position: sticky;
+  top: 80px;
+  line-height: 0;
 }
 
-.news table th,
-.news table td {
-  padding-top: 0.8rem;
-  padding-bottom: 0.8rem;
+.about-page .hero-image img,
+.about-page .reveal-canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: 50% 25%;
+  border-radius: 12px;
 }
 
-.news table th {
+.about-page .hero-image img {
+  border: 1px solid var(--global-divider-color);
+  box-shadow: 0 12px 34px rgba(24, 39, 52, 0.12);
+}
+
+.about-page .hero-image img.is-circular,
+.about-page .hero-image img.is-circular ~ .reveal-canvas {
+  border-radius: 50%;
+}
+
+// Decode overlay: sits exactly on the photo and fades out when it resolves.
+.about-page .reveal-canvas {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.45s ease;
+}
+
+// The edge map is opaque, so the photo simply sits underneath it; if the
+// canvas never paints (no JS, no 2d context) the photo shows as normal.
+
+.about-page .reveal-step {
+  position: absolute;
+  left: 0.55rem;
+  bottom: 0.55rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: 4px;
+  background: rgba(6, 12, 16, 0.72);
+  color: #5ad1e6;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.64rem;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.about-page .hero-image[data-running] .reveal-step {
+  opacity: 1;
+}
+
+.about-page .hero-image[data-reveal] {
+  cursor: pointer;
+}
+
+.about-page .hero-title {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.7rem, 3.6vw, 2.35rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.about-page .hero-subtitle {
+  margin: 0.5rem 0 1.4rem;
   color: var(--global-text-color-light);
-  font-size: 0.82rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.about-page .hero-bio p {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.about-page .hero-bio p:last-child {
+  margin-bottom: 0;
+}
+
+// `_base.scss` paints every span/strong/em with the body text colour, which
+// overrides the link colour on anything nested inside an <a>. Links own their
+// contents so every link reads the same. Scoped to prose: card components set
+// their own colours and must not be caught by this.
+.about-page .hero-bio a span,
+.about-page .hero-bio a strong,
+.about-page .hero-bio a em,
+.about-page .hero-bio a code,
+.about-page .news-desc a span,
+.about-page .news-desc a strong,
+.about-page .news-desc a em,
+.about-page .news-desc a code {
+  color: inherit;
+}
+
+// Affiliation logos set inline with the running text.
+.inline-logo {
+  display: inline-block;
+  width: auto;
+  height: 1.15em;
+  margin-right: 0.22em;
+  vertical-align: -0.2em;
+}
+
+// Wordmarks already contain the institution name, so they stand alone and
+// need more height than a shield mark to stay legible.
+.inline-logo--wordmark {
+  height: 1.65em;
+  margin-right: 0;
+  vertical-align: -0.5em;
+}
+
+// Only the logo and the word it leads into are glued together; the rest of
+// the institution name must stay breakable or it overflows narrow viewports.
+.logo-lede {
+  white-space: nowrap;
+}
+
+/******************************************************************************
+ * Section headings
+ ******************************************************************************/
+
+.about-page .section-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-top: 2.8rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--global-divider-color);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.5rem;
+  letter-spacing: -0.015em;
+}
+
+.about-page .section-title a {
+  color: inherit;
+}
+
+.about-page .section-hint {
+  margin-left: auto;
+  color: var(--global-text-color-light);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/******************************************************************************
+ * News
+ ******************************************************************************/
+
+.news-scroll {
+  position: relative;
+  overflow: hidden auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--global-divider-color) transparent;
+}
+
+.news-scroll.is-scrollable {
+  // Roughly four rows; the rest is reachable by scrolling.
+  max-height: 17.5rem;
+  padding-right: 0.65rem;
+  // Fade the last row so it reads as "there is more below".
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 2.2rem), transparent 100%);
+}
+
+.news-scroll.is-scrollable.is-at-end {
+  mask-image: none;
+}
+
+.news-scroll:focus-visible {
+  outline: 2px solid var(--global-theme-color);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.news-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.news-scroll::-webkit-scrollbar-thumb {
+  background: var(--global-divider-color);
+  border-radius: 3px;
+}
+
+.news-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.news-row {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: 0.25rem 1rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--global-divider-color);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.news-row:last-child {
+  border-bottom: none;
+}
+
+.news-date {
+  color: var(--global-text-color-light);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  padding-top: 0.12rem;
+}
+
+.news-desc p {
+  margin: 0;
+}
+
+/******************************************************************************
+ * Conference highlights
+ ******************************************************************************/
+
+.conf-strip {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--global-divider-color) transparent;
+  // Let cards bleed to the container edge while keeping focus rings visible.
+  margin: 0 -2px;
+  padding: 2px 2px 0.75rem;
+}
+
+.conf-strip::-webkit-scrollbar {
+  height: 6px;
+}
+
+.conf-strip::-webkit-scrollbar-thumb {
+  background: var(--global-divider-color);
+  border-radius: 3px;
+}
+
+.conf-track {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  scroll-snap-type: x proximity;
+}
+
+// Captions sit on a dark band, so the whole card is white-on-dark. Setting the
+// colour here (rather than on the spans) keeps it ahead of the `a span { color:
+// inherit }` rule that makes body links colour their own contents.
+.conf-card,
+a.conf-card:hover,
+a.conf-card:focus-visible,
+a.conf-card:visited {
+  flex: 0 0 248px;
+  display: block;
+  scroll-snap-align: start;
+  color: #fff;
+  text-decoration: none;
+  transition: transform 0.18s ease;
+}
+
+a.conf-card:hover,
+a.conf-card:focus-visible {
+  transform: translateY(-3px);
+}
+
+.conf-card-img {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--global-code-bg-color);
+  // The zoom transition promotes the <img> to its own compositing layer, which
+  // can paint over the caption. An explicit stacking context plus z-index on
+  // the overlays keeps the order deterministic.
+  isolation: isolate;
+}
+
+.conf-card-img img {
+  position: relative;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+a.conf-card:hover .conf-card-img img,
+a.conf-card:focus-visible .conf-card-img img {
+  transform: scale(1.04);
+}
+
+// The caption sits on the photo in a solid dark band, so it reads identically
+// in the light and the dark theme and its contrast never depends on the photo
+// behind it. A short gradient above the band softens the edge.
+.conf-card-caption {
+  position: absolute;
+  z-index: 2;
+  inset: auto 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.08rem;
+  padding: 0.5rem 0.7rem 0.6rem;
+  background: #0d1319;
+}
+
+.conf-card-caption::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 100% 0;
+  height: 2.2rem;
+  background: linear-gradient(to top, #0d1319 0%, rgba(13, 19, 25, 0) 100%);
+  pointer-events: none;
+}
+
+.conf-card-name,
+.conf-card-place {
+  color: #fff;
+}
+
+.conf-card-name {
+  font-size: 0.95rem;
+  font-weight: 650;
+  line-height: 1.25;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+
+.conf-card-place {
+  font-size: 0.8rem;
+  opacity: 0.88;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+
+.conf-card-date {
+  position: absolute;
+  z-index: 2;
+  top: 0.5rem;
+  left: 0.5rem;
+  padding: 0.14rem 0.5rem;
+  border-radius: 999px;
+  background: #0d1319;
+  color: #fff;
+  font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+/******************************************************************************
+ * Responsive
+ ******************************************************************************/
+
+@media (max-width: 768px) {
+  .about-page .hero {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .about-page .hero-image {
+    position: static;
+    width: 210px;
+  }
+
+  .about-page .hero-bio {
+    text-align: left;
+  }
+
+  .news-row {
+    grid-template-columns: 1fr;
+    gap: 0.1rem;
+  }
+
+  // Stacked rows are taller, so give the window a little more room.
+  .news-scroll.is-scrollable {
+    max-height: 20rem;
+  }
+
+  .conf-card {
+    flex-basis: 200px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  a.conf-card,
+  .conf-card-img img {
+    transition: none;
+  }
+
+  a.conf-card:hover,
+  a.conf-card:focus-visible {
+    transform: none;
+  }
+
+  a.conf-card:hover .conf-card-img img {
+    transform: none;
+  }
 }
 
 // Profile
@@ -110,3 +519,70 @@ body.sticky-bottom-footer {
 *****************************************************************************/
 
 // TODO: redefine projects layout.
+
+/******************************************************************************
+ * Dark-theme adjustments for the front page
+ ******************************************************************************/
+
+html[data-theme="dark"] {
+  .about-page .hero-image img {
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5);
+  }
+
+  // The UZH seal is pure black line art; invert it so it reads on a dark page.
+  .inline-logo--adapt {
+    filter: invert(1);
+  }
+
+  // Mila's wordmark is a deep purple that muddies against the dark background.
+  .inline-logo--wordmark {
+    filter: brightness(1.75) saturate(0.85);
+  }
+}
+
+/******************************************************************************
+ * Social icons in the nav bar
+ ******************************************************************************/
+
+.navbar .nav-social {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .nav-social-icons {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.62rem;
+  margin: 0 0.55rem 0 0.75rem;
+  padding-left: 0.9rem;
+  border-left: 1px solid var(--global-divider-color);
+  font-size: 1.02rem;
+  line-height: 1;
+}
+
+.navbar .nav-social-icons a {
+  display: inline-flex;
+  color: var(--global-text-color);
+}
+
+.navbar .nav-social-icons a i::before {
+  color: var(--global-text-color);
+  transition: color 0.2s ease-in-out;
+}
+
+.navbar .nav-social-icons a:hover i::before {
+  color: var(--global-theme-color);
+}
+
+// In the collapsed mobile menu the icons become their own centred row.
+@media (max-width: 575.98px) {
+  .navbar .nav-social-icons {
+    justify-content: flex-end;
+    margin: 0.35rem 0;
+    padding: 0.5rem 0 0;
+    border-left: none;
+    border-top: 1px solid var(--global-divider-color);
+    font-size: 1.15rem;
+    width: 100%;
+  }
+}

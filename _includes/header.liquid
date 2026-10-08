@@ -103,6 +103,10 @@
               {% endif %}
             {% endif %}
           {% endfor %}
+          <!-- Social icons live in the nav so the page body stays for content -->
+          <li class="nav-item nav-social">
+            <span class="nav-social-icons">{% include social.liquid %}</span>
+          </li>
           {% if site.search_enabled %}
             <!-- Search -->
             <li class="nav-item">
