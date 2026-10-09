@@ -21,8 +21,9 @@
     var HOLD = 900; // ms the detection box stays before it all fades
     var ACCENT = '#5ad1e6';
 
-    // Face box in normalised coordinates of the displayed (cropped) photo.
-    var BOX = { x: 0.2, y: 0.19, w: 0.48, h: 0.48 };
+    // Face box in normalised coordinates of the displayed (cropped) photo,
+    // measured off the 4:5 crop: cap top 0.28, chin 0.78, hair 0.27 to 0.70.
+    var BOX = { x: 0.27, y: 0.28, w: 0.43, h: 0.5 };
 
     var edges = null; // ImageData of the rendered edge map, at canvas size
     var edgeW = 0;

@@ -1,0 +1,141 @@
+<!-- Endlessly looping auto-scroll for the conference strip. -->
+<script>
+  (function () {
+    var strip = document.querySelector('[data-conf-strip]');
+    var track = strip && strip.querySelector('[data-conf-track]');
+    if (!strip || !track) return;
+
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var SPEED = 32; // px per second
+    var TICK = 25; // ms between position updates
+    var RESUME_AFTER = 2500; // ms of stillness before drifting again
+
+    var originals = Array.prototype.slice.call(track.children);
+    if (!originals.length) return;
+
+    var period = 0; // px from one copy of the row to the next
+    var pos = 0;
+    var last = null;
+    var paused = false;
+    var resumeTimer = null;
+    var timer = null;
+
+    function appendCopy() {
+      originals.forEach(function (node) {
+        var copy = node.cloneNode(true);
+        copy.setAttribute('aria-hidden', 'true');
+        copy.setAttribute('tabindex', '-1');
+        track.appendChild(copy);
+      });
+    }
+
+    // Repeat the row until a full copy of it sits on either side of the
+    // viewport. That is what lets the scroll wrap in both directions without
+    // ever exposing an edge, however few conferences there are.
+    function buildLoop() {
+      if (track.children.length === originals.length) appendCopy();
+      period = track.children[originals.length].offsetLeft - track.children[0].offsetLeft;
+      if (!(period > 0)) return false;
+
+      var needed = period * 2 + strip.clientWidth;
+      var guard = 0;
+      while (track.scrollWidth < needed && guard++ < 24) appendCopy();
+      return true;
+    }
+
+    // Keep the position inside the middle copy, so there is always a row's
+    // worth of cards both before and after whatever is on screen.
+    function wrapped(x) {
+      if (!(period > 0)) return x;
+      if (x >= period * 2) return x - period;
+      if (x < period) return x + period;
+      return x;
+    }
+
+    function pause() {
+      paused = true;
+      clearTimeout(resumeTimer);
+    }
+
+    function resumeSoon() {
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(function () {
+        paused = false;
+        last = null;
+      }, RESUME_AFTER);
+    }
+
+    function step() {
+      var now = Date.now();
+      if (last === null) last = now;
+      var dt = (now - last) / 1000;
+      last = now;
+      if (paused || document.hidden) return;
+      // Clamp rather than skip: a long gap (background tab, slow paint) should
+      // advance a little, never freeze the drift entirely.
+      if (dt > 0.1) dt = 0.1;
+      if (!(period > 0)) return;
+
+      pos = wrapped(pos + SPEED * dt);
+      strip.scrollLeft = pos;
+    }
+
+    function stop() {
+      if (timer) clearInterval(timer);
+      timer = null;
+    }
+
+    function start() {
+      stop();
+      if (!buildLoop()) return;
+      pos = period;
+      strip.scrollLeft = pos;
+      last = null;
+      if (reduced.matches) return; // still loops by hand, just does not drift
+      timer = setInterval(step, TICK);
+    }
+
+    // Hovering, focusing or touching the strip hands control back to the reader.
+    strip.addEventListener('mouseenter', pause);
+    strip.addEventListener('mouseleave', resumeSoon);
+    strip.addEventListener('focusin', pause);
+    strip.addEventListener('focusout', resumeSoon);
+    strip.addEventListener('touchstart', pause, { passive: true });
+    strip.addEventListener('touchend', resumeSoon, { passive: true });
+    strip.addEventListener(
+      'wheel',
+      function () {
+        pause();
+        resumeSoon();
+      },
+      { passive: true }
+    );
+
+    // Hand-scrolling wraps too, so dragging either way never reaches an end.
+    strip.addEventListener(
+      'scroll',
+      function () {
+        var x = strip.scrollLeft;
+        if (Math.abs(x - pos) > 2) pos = x; // the reader moved it
+        var w = wrapped(pos);
+        if (w !== pos) {
+          pos = w;
+          strip.scrollLeft = w;
+        }
+      },
+      { passive: true }
+    );
+
+    var resizeTimer = null;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(start, 150);
+    });
+
+    if (reduced.addEventListener) {
+      reduced.addEventListener('change', start);
+    }
+
+    start();
+  })();
+</script>

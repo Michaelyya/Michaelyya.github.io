@@ -1,0 +1,24 @@
+{%- comment -%}
+  An affiliation logo set inline with running text.
+
+  Lives in an include rather than inline in the Markdown so the `relative_url`
+  filter stays out of `_pages/*.md`: the link checker reads those files as raw
+  text, before Liquid runs, and would treat `{{ ... }}` as a literal filename.
+
+  The markup is captured and emitted through `strip_newlines` so it always
+  reaches the page as a single line. Kramdown treats a raw tag broken across
+  lines inside a paragraph as plain text and escapes it, so a reformat of this
+  file (Prettier wraps long tags) would otherwise silently break the page.
+
+  Params: file (required, name under /assets/img/), modifier, alt.
+{%- endcomment -%}
+
+{%- capture logo_markup -%}
+<img
+  class="inline-logo{% if include.modifier %} inline-logo--{{ include.modifier }}{% endif %}"
+  src="{{ include.file | prepend: '/assets/img/' | relative_url }}"
+  alt="{{ include.alt }}"
+  {%- unless include.alt %} aria-hidden="true"{% endunless %}
+>
+{%- endcapture -%}
+{{- logo_markup | strip_newlines -}}
